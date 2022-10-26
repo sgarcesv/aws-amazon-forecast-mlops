@@ -120,14 +120,6 @@ def get_pipeline(
     if role is None:
         role = sagemaker.session.get_execution_role(sagemaker_session)
 
-    # Download to the data folder, and upload to the pipeline input uri
-    download_uri = "s3://aimlworkshopspipeline-workshopresourcesbucket-22rpkozo2usk/amazon-forecast-mlops-workshop/data/train.csv"
-    S3Downloader().download(download_uri, "data")
-
-    # Uplaod the data to the input location
-    input_data_uri = f"s3://{default_bucket}/train"
-    S3Uploader().upload("data", input_data_uri)
-
     # Parameters for pipeline execution
     processing_instance_count = ParameterInteger(
         name="ProcessingInstanceCount", default_value=1
@@ -143,8 +135,7 @@ def get_pipeline(
     ) 
     input_train = ParameterString(
         name="TrainData",
-        #default_value=f"s3://{default_bucket}/forecast_pipeline_example/train.csv",
-        default_value=input_data_uri,
+        default_value=f"s3://sagemaker-eu-west-1-870401269756/amazon-forecast-mlops/data/train.csv",
     )
     model_output = ParameterString(name="ModelOutput", default_value=f"s3://{default_bucket}/model")
 
@@ -281,3 +272,4 @@ def get_pipeline(
         ),
     )
     return pipeline
+
